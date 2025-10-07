@@ -31,6 +31,7 @@ http.createServer(function(req, res) {
         paragraph = "My name is E H Murdoch.";
     }
 
+    /** This is where we replace our placeholders with text. */
     content = template.replace("{heading}", heading);
     content = content.replace("{paragraph}", paragraph);
     content = content.replace("{useragent}", req.rawHeaders[3]);
