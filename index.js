@@ -1,6 +1,25 @@
 var http = require("http");
 const port = 8000;
 
+const data = {
+    "/": ["Homepage", "My name is E H Murdoch"],
+    "/hello": ["Hello Everybody!", "This is a really nice hello"],
+    "/fact": ["A fun fact", "Pirates wear eyepatches so one eye will always be able to see in the dark."]
+};
+
+const menu_template = "<ul>{links}</ul>";
+const link_template = "<li><a href='{href}'>{title}</a></li>";
+
+let links = "";
+for (let route in data) {
+    let title = data[route][0];
+    let link = link_template.replace("{href}", route)
+        .replace("{title}", title);
+    links += link;
+}
+
+let menu = menu_template.replace("{links}", links);
+
 const template = `
 <!DOCTYPE html>
 <html>
@@ -10,18 +29,13 @@ const template = `
     </head>
     <body>
         <h1>My Page!</h1>
+        ${menu}
         <h2>{heading}</h2>
         <p>{paragraph}</p>
         <p><strong>User agent:</strong> {useragent}</p>
     </body>
 </html>
 `;
-
-const data = {
-    "/": ["Homepage", "My name is E H Murdoch"],
-    "/hello": ["Hello Everybody!", "This is a really nice hello"],
-    "/fact": ["A fun fact", "Pirates wear eyepatches so one eye will always be able to see in the dark."]
-};
 
 http.createServer(function(req, res) {
     let pagetitle, heading, paragraph, content;
