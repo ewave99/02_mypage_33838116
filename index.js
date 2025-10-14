@@ -6,7 +6,7 @@ const template = `
 <html>
     <head lang='en'>
         <meta charset='utf-8'>
-        <title>My Page!</title>
+        <title>{pagetitle} - My Page!</title>
     </head>
     <body>
         <h1>My Page!</h1>
@@ -17,24 +17,31 @@ const template = `
 </html>
 `;
 
+const data = {
+    "/": ["Homepage", "My name is E H Murdoch"],
+    "/hello": ["Hello Everybody!", "This is a really nice hello"],
+    "/fact": ["A fun fact", "Pirates wear eyepatches so one eye will always be able to see in the dark."]
+};
+
 http.createServer(function(req, res) {
-    let heading, paragraph, content;
+    let pagetitle, heading, paragraph, content;
 
     console.log(req.url);
 
-    if (req.url === "/hello") {
-        heading = "Hello everybody!";
-        paragraph = "this is a really nice hello";
+    if (req.url in data) {
+        [heading, paragraph] = data[req.url];
     }
     else {
-        heading = "My page";
-        paragraph = "My name is E H Murdoch.";
+        [heading, paragraph] = data["/"];
     }
 
+    pagetitle = heading;
+
     /** This is where we replace our placeholders with text. */
-    content = template.replace("{heading}", heading);
-    content = content.replace("{paragraph}", paragraph);
-    content = content.replace("{useragent}", req.rawHeaders[3]);
+    content = template.replace("{pagetitle}", pagetitle)
+        .replace("{heading}", heading)
+        .replace("{paragraph}", paragraph)
+        .replace("{useragent}", req.rawHeaders[3]);
 
     res.writeHead(200, { "Content-Type": "text/html" });
     res.end(content);
